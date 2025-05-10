@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Healthy Habits Tracker</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script type="module" src="js/main.js" defer></script>
+  <script src="js/inject.js" defer></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {    
+  apiKey: "AIzaSyA_AagD78qn0N2iR287Htb5J5YOzX3ZFv0",
+  authDomain: "healthy-habits-tracker-e1210.firebaseapp.com",
+  projectId: "healthy-habits-tracker-e1210",
+  storageBucket: "healthy-habits-tracker-e1210.firebasestorage.app",
+  messagingSenderId: "660970379798",
+  appId: "1:660970379798:web:2ed75725279f6f7cfcf337",
+  measurementId: "G-Q64BW6TD4W",
+ databaseURL: "https://healthy-habits-tracker-e0714-default-rtdb.asia-southeast1.firebasedatabase.app",
+      
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const habitsRef = ref(db, 'habits');
+
+    // Log Progress
+    window.logProgress = async function (habitId) {
+      const today = new Date().toISOString().split('T')[0];
+      const input = document.getElementById(`log-${habitId}`);
+      const value = parseInt(input.value);
+      if (!isNaN(value)) {
+        const logRef = ref(db, `habits/${habitId}/logs/${today}`);
+        await update(logRef, { value });
+        input.value = '';
+        loadHabits();
+      }
+    };
+
+    // Delete Habit
+    window.deleteHabit = async function (habitId) {
+      if (confirm("Delete this habit?")) {
+        const habitRef = ref(db, `habits/${habitId}`);
+        await remove(habitRef);
+        loadHabits();
+      }
+    };
+
+    // Edit Habit
+    window.editHabit = async function (id) {
+      const name = prompt("Enter new name:");
+      const goal = prompt("Enter new goal:");
+      if (name && goal) {
+        const habitRef = ref(db, `habits/${id}`);
+        await update(habitRef, { name, goal: parseInt(goal) });
+        loadHabits();
+      }
+    };
+
+    // Load Habits
+    window.loadHabits = function () {
+      onValue(habitsRef, snapshot => {
+        const container = document.getElementById("habit-list");
+        container.innerHTML = '';
+        const habits = snapshot.val();
+        for (let id in habits) {
+          const habit = habits[id];
+          const today = new Date().toISOString().split('T')[0];
+          const log = habit.logs?.[today]?.value || 0;
+          const progress = Math.min((log / habit.goal) * 100, 100).toFixed(0);
+
+          container.innerHTML += `
+            <div class="habit">
+              <h3>${habit.name} (${habit.category || ""})</h3>
+              <p>Goal: ${habit.goal} ${habit.goalType || ""}</p>
+              <div class="progress-bar">
+                <div class="progress" style="width: ${progress}%;">${progress}%</div>
+              </div>
+              <input type="number" id="log-${id}" placeholder="Enter progress" />
+              <button onclick="logProgress('${id}')">Log</button>
+              <button onclick="editHabit('${id}')">Edit</button>
+              <button onclick="deleteHabit('${id}')">Delete</button>
+            </div>
+          `;
+        }
+      });
+    };
+
+    // Function to dynamically load reusable components
+    function loadHTML(id, file) {
+      fetch(file)
+        .then(res => {
+          if (!res.ok) throw new Error(`Failed to load ${file}`);
+          return res.text();
+        })
+        .then(html => {
+          document.getElementById(id).innerHTML = html;
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById(id).innerHTML = `<p>Error loading ${file}</p>`;
+        });
+    }
+
+    // Initialize Habits and Inject Components on Page Load
+    document.addEventListener("DOMContentLoaded", () => {
+      loadHTML("header-container", "header.html");
+      loadHTML("sidebar-container", "sidebar.html");
+      loadHTML("footer-container", "footer.html");
+      loadHabits();
+    });
+  </script>
+
+  <style>
+
+
+    
+
+    .layout {
+      display: flex;
+      flex: 1;
+      /* margin-top: 60px;  */
+    }
+
+   
+    main {
+      /* margin-left: 200px; Adjust for fixed sidebar */
+      padding: 20px; 
+      flex: 1;
+       overflow-y: auto; 
+      height: calc(100vh - 50px); 
+
+    }
+
+    
+
+    .habit {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-bar {
+      background: #ddd;
+      height: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress {
+      background-color: #4caf50;
+      height: 100%;
+      color: white;
+      text-align: center;
+      line-height: 24px;
+      transition: width 0.3s ease;
+    }
+
+    input[type="number"] {
+      width: calc(100% - 22px);
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-right: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #habit-list {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Injected Components -->
+  <div id="header-container">Header</div>
+
+  <div class="layout">
+    <div id="sidebar-container">Sidebar</div>
+
+    <!-- Main Content -->
+    <main style="background-color:aquamarine;">
+      <h1 style="text-align: center;">Habit Progress Tracker</h1>
+      <div id="habit-list"></div>
+    </main>
+  </div>
+
+  <div id="footer-container">Footer</div>
+
+</body>
+</html>

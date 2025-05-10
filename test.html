@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Healthy Habits Tracker</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script type="module" src="js/main.js" defer></script>
+  <script src="js/inject.js" defer></script>
+</head>
+<body>
+
+  <!-- Injected Components -->
+  <div id="header-container"></div>
+
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main>
+      <h1>Welcome to Your Dashboard!</h1>
+      <p>Track your habits and stay motivated.</p>
+      <!-- Optional: Rotating Box or Dashboard Widgets -->
+    </main>
+  </div>
+
+  <div id="footer-container"></div>
+
+
+  <script>
+    function loadHTML(id, file) {
+  fetch(file)
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById(id).innerHTML = html;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadHTML("header-container", "header.html");
+  loadHTML("sidebar-container", "sidebar.html");
+  loadHTML("footer-container", "footer.html");
+});
+
+  </script>
+
+</body>
+</html>

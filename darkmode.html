@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Habit Tracker Layout</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #34495e; /* Dark background */
+      color: #ecf0f1; /* Light text color */
+    }
+
+    header {
+      background-color: #2c3e50; /* Dark header */
+      color: #ecf0f1;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 20px;
+    }
+
+    #logout-btn {
+      background: #e74c3c;
+      border: none;
+      color: #ecf0f1;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .layout {
+      flex: 1;
+      display: flex;
+    }
+
+    aside {
+      width: 250px;
+      background-color: #2c3e50;
+      padding: 20px;
+      color: #ecf0f1;
+    }
+
+    aside h3 {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    aside ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    aside li {
+      padding: 12px 20px;
+      margin: 8px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #34495e; /* Sidebar button color */
+      transition: background-color 0.3s ease;
+    }
+
+    aside li:hover {
+      background-color: #16a085; /* Hover effect */
+    }
+
+    aside li a {
+      color: #ecf0f1;
+      text-decoration: none;
+    }
+
+    aside li a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      background-color: #1abc9c; /* Main content background */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    footer {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      text-align: center;
+      padding: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      aside {
+        width: 100%;
+        text-align: center;
+      }
+
+      header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+    /* Dark Mode styles */
+    body.dark-mode {
+      background-color: #2c3e50;
+    }
+
+    header.dark-mode {
+      background-color: #34495e;
+    }
+
+    aside.dark-mode {
+      background-color: #34495e;
+    }
+
+    main.dark-mode {
+      background-color: #16a085;
+    }
+
+    #dark-mode-toggle, #start-reminders {
+      background-color: #16a085;
+      color: #ecf0f1;
+      padding: 12px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    #dark-mode-toggle:hover, #start-reminders:hover {
+      background-color: #1abc9c;
+    }
+
+    /* Rotating Box */
+    .rotating-box {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-wrap: wrap;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotateBox 10s infinite linear;
+    }
+
+    .rotating-box div {
+      width: 90%;
+      height: 90%;
+      position: absolute;
+      background-size: cover;
+      background-position: center;
+      transform-origin: center center;
+      border-radius: 10px;
+    }
+
+    .rotating-box div:nth-child(1) {
+      background-image: url('https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1000w,f_auto,q_auto:best/rockcms/2023-01/230102-water-hydration-pitcher-stock-ac-457p-05973b.jpg');
+      transform: rotateY(0deg) translateZ(100px);
+    }
+
+    .rotating-box div:nth-child(2) {
+      background-image: url('https://www.crunch.com/wp-content/uploads/2023/01/CR011SLTH_January_1.30_Hub-Images_5-Health-Related-Components-of-Fitness_1.26.235.jpg');
+      transform: rotateY(90deg) translateZ(100px);
+    }
+
+    .rotating-box div:nth-child(3) {
+      background-image: url('https://i.scdn.co/image/ab67616d0000b2732c03b769162480effcfd6b72');
+      transform: rotateY(180deg) translateZ(100px);
+    }
+
+    .rotating-box div:nth-child(4) {
+      background-image: url('https://www.sincera.in/wp-content/uploads/2017/08/mental-health-1080x675.jpeg');
+      transform: rotateY(270deg) translateZ(100px);
+    }
+
+    .rotating-box div:nth-child(5) {
+      background-image: url('https://fresnochamber.com/wp-content/uploads/2022/05/5-Productivity-Hacks-1.jpg');
+      transform: rotateX(90deg) translateZ(100px);
+    }
+
+    .rotating-box div:nth-child(6) {
+      background-image: url('https://www.moshikids.com/wp-content/uploads/2022/04/the-importance-of-sleep-balance-mood-learning-and-motivation-1536x864.jpg');
+      transform: rotateX(-90deg) translateZ(100px);
+    }
+
+    @keyframes rotateBox {
+      0% {
+        transform: rotate3d(1, 1, 0, 0deg);
+      }
+      100% {
+        transform: rotate3d(1, 1, 0, 360deg);
+      }
+    }
+
+    #welcome-message {
+      text-align: left;
+      margin-bottom: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <h1>Healthy Habits Tracker</h1>
+    <button id="logout-btn">Logout</button>
+  </header>
+
+  <!-- Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside>
+      <h3>Menu</h3>
+      <ul>
+        <li><a href="goals.html">Your Goals</a></li>
+        <li><a href="create habit.html">Create Habit</a></li>
+        <li><a href="progress.html">Habit Progress</a></li>
+        <li><a href="weekly summaries.html">Weekly Summaries</a></li>
+        <li><button id="start-reminders">Reminders</button></li>
+        <!-- Dark Mode Toggle Button -->
+        <li><button id="dark-mode-toggle">🌙 Dark Mode</button></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+      <div style="justify-content: left;" id="welcome-message">
+        <h1>Welcome to Your Dashboard!</h1>
+        <p>Track your habits and stay motivated.</p>
+      </div>
+
+      <div class="rotating-box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Healthy Habits Tracker. All rights reserved.
+  </footer>
+
+  <!-- Firebase Integration and JavaScript -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCANLSJXZU8rPACTQIq0GgrcD1qWUwgIWk",
+      authDomain: "healthy-habits-tracker-e0714.firebaseapp.com",
+      projectId: "healthy-habits-tracker-e0714",
+      storageBucket: "healthy-habits-tracker-e0714.appspot.com",
+      messagingSenderId: "965963550235",
+      appId: "1:965963550235:web:de46c5e46f51bc61ba72be",
+      measurementId: "G-SLBELT30XJ",
+      databaseURL: "https://healthy-habits-tracker-e0714-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const habitsRef = ref(db, 'habits');
+
+    // Logout logic
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        alert("You have been logged out.");
+        window.location.href = "login.html";
+      }).catch((error) => {
+        console.error("Logout error:", error);
+        alert("Failed to log out.");
+      });
+    });
+
+    // Start reminder button logic
+    document.getElementById("start-reminders").addEventListener("click", () => {
+      if (!("Notification" in window)) {
+        alert("This browser does not support notifications.");
+        return;
+      }
+
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          startHabitReminders();
+          alert("Habit reminders activated!");
+        } else {
+          alert("Notifications not enabled.");
+        }
+      });
+    });
+
+    // Send habit reminders every second
+    function startHabitReminders() {
+      sendReminders(); // First time immediately
+
+      setInterval(() => {
+        sendReminders();
+      }, 5 * 60 * 1000); // Every 5 minutes
+    }
+
+    // Load habits and show notifications
+    function sendReminders() {
+      onValue(habitsRef, snapshot => {
+        const habits = snapshot.val();
+        if (!habits) return;
+
+        for (let id in habits) {
+          const habit = habits[id];
+          const habitName = habit.name || "Unnamed Habit";
+
+          new Notification("⏰ Habit Reminder", {
+            body: `Don't forget to track your progress for: ${habitName}`,
+            icon: "https://cdn-icons-png.flaticon.com/512/2913/2913465.png"
+          });
+        }
+      }, { onlyOnce: true });
+    }
+
+    // Dark Mode Toggle
+    const darkModeButton = document.getElementById("dark-mode-toggle");
+    darkModeButton.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      document.querySelector("header").classList.toggle("dark-mode");
+      document.querySelector("aside").classList.toggle("dark-mode");
+      document.querySelector("main").classList.toggle("dark-mode");
+
+      // Store dark mode preference in localStorage
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("darkMode", "enabled");
+      } else {
+        localStorage.removeItem("darkMode");
+      }
+    });
+
+    // Check localStorage for dark mode preference
+    if (localStorage.getItem("darkMode") === "enabled") {
+      document.body.classList.add("dark-mode");
+      document.querySelector("header").classList.add("dark-mode");
+      document.querySelector("aside").classList.add("dark-mode");
+      document.querySelector("main").classList.add("dark-mode");
+    }
+
+  </script>
+
+</body>
+</html>

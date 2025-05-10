@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Healthy Habits Tracker</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script type="module" src="js/main.js" defer></script>
+  <script src="js/inject.js" defer></script>
+  <style>
+    
+
+
+    .layout {
+      display: flex;
+      flex: 1;
+      /* margin-top: 60px; Adjust for fixed header */
+    }
+
+    
+
+    main {
+      margin-left: 200px; /* Adjust for fixed sidebar */
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+      height: calc(100vh - 60px); /* Adjust for fixed header */
+    }
+
+    
+
+    .summary {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 40px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      color: #333;
+    }
+
+    .summary h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .summary p {
+      font-size: 18px;
+      margin: 15px 0;
+      color: #444;
+    }
+
+    .summary span {
+      font-weight: 600;
+      color: #121814;
+    }
+
+    .summary .stat {
+      background-color: #2ecc71;
+      color: #fff;
+      border-radius: 30px;
+      padding: 12px 30px;
+      margin-top: 15px;
+      display: inline-block;
+      font-size: 20px;
+      font-weight: 600;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .summary .stat-weekly {
+      background-color: #3498db;
+    }
+
+   
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .summary {
+        padding: 20px;
+      }
+
+      .summary h1 {
+        font-size: 30px;
+      }
+
+      .summary p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Injected Components -->
+  <div id="header-container"></div>
+
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main>
+      <h1 style="color: black;">Healthy Habit Performance</h1>
+      <div class="summary">
+        <h2>Today's Summary</h2>
+        <p>Habits Completed: <span id="daily-completed">0</span> / <span id="daily-total">0</span></p>
+        <p>Daily Completion Rate: <span id="daily-rate">0%</span></p>
+        <div class="stat stat-daily">
+          <span id="daily-rate-graph">0%</span>
+        </div>
+
+        <h2>This Week's Summary</h2>
+        <p>Weekly Completion Rate: <span id="weekly-rate">0%</span></p>
+        <div class="stat stat-weekly">
+          <span id="weekly-rate-graph">0%</span>
+        </div>
+
+        <p>Best Day This Week: <span id="best-day">-</span></p>
+      </div>
+    </main>
+  </div>
+
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    const firebaseConfig = {    
+  apiKey: "AIzaSyA_AagD78qn0N2iR287Htb5J5YOzX3ZFv0",
+  authDomain: "healthy-habits-tracker-e1210.firebaseapp.com",
+  projectId: "healthy-habits-tracker-e1210",
+  storageBucket: "healthy-habits-tracker-e1210.firebasestorage.app",
+  messagingSenderId: "660970379798",
+  appId: "1:660970379798:web:2ed75725279f6f7cfcf337",
+  measurementId: "G-Q64BW6TD4W",
+ databaseURL: "https://healthy-habits-tracker-e0714-default-rtdb.asia-southeast1.firebasedatabase.app",
+      
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const habitsRef = ref(db, 'habits');
+
+    const today = new Date().toISOString().split('T')[0];
+    const thisWeek = [...Array(7)].map((_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      return date.toISOString().split('T')[0];
+    });
+
+    onValue(habitsRef, (snapshot) => {
+      const data = snapshot.val();
+      let dailyCompleted = 0, totalHabits = 0;
+      const weeklyMap = {};
+
+      for (let id in data) {
+        const habit = data[id];
+        totalHabits++;
+
+        const logs = habit.logs || {};
+        if (logs[today]?.value) dailyCompleted++;
+
+        thisWeek.forEach(date => {
+          weeklyMap[date] = (weeklyMap[date] || 0) + (logs[date]?.value ? 1 : 0);
+        });
+      }
+
+      const weeklyTotal = Object.values(weeklyMap).reduce((a, b) => a + b, 0);
+      const weeklyRate = (weeklyTotal / (totalHabits * 7)) * 100;
+      const dailyRate = ((dailyCompleted / totalHabits) * 100).toFixed(0);
+      const bestDay = Object.entries(weeklyMap).reduce((a, b) => b[1] > a[1] ? b : a)[0];
+
+      document.getElementById('daily-total').textContent = totalHabits;
+      document.getElementById('daily-completed').textContent = dailyCompleted;
+      document.getElementById('daily-rate').textContent = dailyRate + '%';
+      document.getElementById('weekly-rate').textContent = isNaN(weeklyRate) ? "0%" : weeklyRate.toFixed(0) + '%';
+      document.getElementById('best-day').textContent = bestDay || "-";
+
+      // Update progress bars and statistics
+      document.getElementById('daily-rate-graph').textContent = dailyRate + '%';
+      document.getElementById('weekly-rate-graph').textContent = isNaN(weeklyRate) ? "0%" : weeklyRate.toFixed(0) + '%';
+
+      document.querySelector('.stat-daily').style.width = dailyRate + '%';
+      document.querySelector('.stat-weekly').style.width = weeklyRate.toFixed(0) + '%';
+    });
+  </script>
+
+</body>
+</html>

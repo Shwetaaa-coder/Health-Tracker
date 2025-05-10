@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Habit Reminder Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #habit-list {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Habit Reminder Tracker</h1>
+  <button id="start-reminders">Start Habit Reminders</button>
+  <div id="habit-list"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+    // ✅ Replace these with your real Firebase project values
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "your-app.firebaseapp.com",
+      databaseURL: "https://healthy-habits-tracker-e0714-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "healthy-habits-tracker-e0714",
+      storageBucket: "your-app.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const habitsRef = ref(db, 'habits');
+
+    document.getElementById("start-reminders").addEventListener("click", () => {
+      if (!("Notification" in window)) {
+        alert("This browser does not support notifications.");
+        return;
+      }
+
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          startHabitReminders();
+          alert("Habit reminders started!");
+        } else {
+          alert("Notifications are blocked or denied.");
+        }
+      });
+    });
+
+    function startHabitReminders() {
+      sendReminders(); // Initial trigger
+
+      setInterval(() => {
+        sendReminders();
+      },60*60*100); // Reminder every 1 second
+    }
+
+    function sendReminders() {
+      onValue(habitsRef, snapshot => {
+        const habits = snapshot.val();
+        if (!habits) return;
+
+        for (let id in habits) {
+          const habit = habits[id];
+          const name = habit.name || "Unnamed Habit";
+
+          new Notification("⏰ Habit Reminder", {
+            body: `Don't forget to complete: ${name}`,
+            icon: "https://cdn-icons-png.flaticon.com/512/2913/2913465.png"
+          });
+        }
+      }, { onlyOnce: true });
+    }
+  </script>
+</body>
+</html>
