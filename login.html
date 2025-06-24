@@ -100,6 +100,8 @@
         .hidden {
             display: none;
         }
+
+        
     </style>
 </head>
 <body>
@@ -172,16 +174,18 @@
                 createUserWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
                         authMessage.innerText = "Sign Up successful!";
+                        authMessage.className = "success-message";
                     })
                     .catch((error) => {
                         // authMessage.innerText = error.message;
                         authMessage.innerText = "Sign Up failed! ";
+                        
                     });
             } else {
                 signInWithEmailAndPassword(auth, email, password)
                     .then((userCredential) => {
                         authMessage.innerText = "Login successful!";
-                        
+                        authMessage.style.color = "green";
                         // Redirect to Dashboard after successful login
                         window.location.href = 'dashboard.html'; // This will redirect the user to the dashboard page
                     })
