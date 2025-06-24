@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+/* <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -84,7 +84,7 @@
     .progress-bar {
       background-color: #4caf50;
       height: 100%;
-      width: 70%; /* Example progress */
+      width: 70%;
       transition: width 0.3s;
     }
 
@@ -160,25 +160,14 @@
     <p>Calendar view coming soon!</p>
   </section>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Healthy Habits Tracker. All Rights Reserved.</p>
-  </footer>
+  
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
     
-    /* const firebaseConfig = {
-      apiKey: "AIzaSyCANLSJXZU8rPACTQIq0GgrcD1qWUwgIWk",
-      authDomain: "healthy-habits-tracker-e0714.firebaseapp.com",
-      projectId: "healthy-habits-tracker-e0714",
-      storageBucket: "healthy-habits-tracker-e0714.firebasestorage.app",
-      messagingSenderId: "965963550235",
-      appId: "1:965963550235:web:de46c5e46f51bc61ba72be",
-      measurementId: "G-SLBELT30XJ"
-    }; */
+    
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -201,10 +190,10 @@
           window.location.href = "login.html";
         })
         .catch((error) => {
-          alert("Logout failed: " + error.message);
+          alert("Logout failed:);
         });
     });
   </script>
 
 </body>
-</html>
+</html> */

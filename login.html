@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -173,7 +174,8 @@
                         authMessage.innerText = "Sign Up successful!";
                     })
                     .catch((error) => {
-                        authMessage.innerText = error.message;
+                        // authMessage.innerText = error.message;
+                        authMessage.innerText = "Sign Up failed! ";
                     });
             } else {
                 signInWithEmailAndPassword(auth, email, password)
@@ -184,7 +186,8 @@
                         window.location.href = 'dashboard.html'; // This will redirect the user to the dashboard page
                     })
                     .catch((error) => {
-                        authMessage.innerText = error.message;
+                        // authMessage.innerText = error.message;
+                        authMessage.innerText = "Invalid email or password! ";
                     });
             }
         });
