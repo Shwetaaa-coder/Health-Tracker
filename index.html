@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Healthy Habits Tracker - Login</title>
+  <style>
+    /* Your existing CSS (unchanged) */
+    body {
+      background: #222;
+      color: #fff;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .auth-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+    }
+    input, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+    }
+    p {
+      margin-top: 10px;
+      color: #e74c3c;
+      font-size: 14px;
+    }
+    .auth-toggle {
+      margin-top: 15px;
+      color: #ccc;
+      cursor: pointer;
+    }
+    .auth-toggle:hover {
+      color: #4a90e2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container" id="auth-container">
+    <h1 id="auth-header">Log In</h1>
+    <form id="authForm">
+      <input type="email" id="auth-email" placeholder="Email" required />
+      <input type="password" id="auth-password" placeholder="Password" required />
+      <button type="button" id="auth-btn">Login</button>
+      <p id="auth-message"></p>
+    </form>
+    <p class="auth-toggle" id="toggle-action">Don't have an account? Sign Up</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    // ✅ Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCANLSJXZU8rPACTQIq0GgrcD1qWUwgIWk",
+      authDomain: "healthy-habits-tracker-e0714.firebaseapp.com",
+      projectId: "healthy-habits-tracker-e0714",
+      storageBucket: "healthy-habits-tracker-e0714.appspot.com",
+      messagingSenderId: "965963550235",
+      appId: "1:965963550235:web:de46c5e46f51bc61ba72be",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ Element references
+    const authBtn = document.getElementById("auth-btn");
+    const authEmail = document.getElementById("auth-email");
+    const authPassword = document.getElementById("auth-password");
+    const authMessage = document.getElementById("auth-message");
+    const authHeader = document.getElementById("auth-header");
+    const toggleAction = document.getElementById("toggle-action");
+
+    let isSignup = false;
+
+    toggleAction.addEventListener("click", () => {
+      isSignup = !isSignup;
+      authHeader.innerText = isSignup ? "Sign Up" : "Log In";
+      authBtn.innerText = isSignup ? "Sign Up" : "Login";
+      toggleAction.innerText = isSignup
+        ? "Already have an account? Log In"
+        : "Don't have an account? Sign Up";
+    });
+
+    authBtn.addEventListener("click", () => {
+      const email = authEmail.value.trim();
+      const password = authPassword.value.trim();
+      authMessage.innerText = ""; // clear messages
+
+      if (isSignup) {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            authMessage.style.color = "green";
+            authMessage.innerText = "Sign-up successful! Redirecting...";
+            setTimeout(() => window.location.href = "dashboard.html", 1000);
+          })
+          .catch((error) => {
+            authMessage.style.color = "red";
+            authMessage.innerText = "Sign-up failed: " + error.message;
+          });
+      } else {
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            authMessage.style.color = "green";
+            authMessage.innerText = "Login successful! Redirecting...";
+            setTimeout(() => window.location.href = "dashboard.html", 1000);
+          })
+          .catch((error) => {
+            authMessage.style.color = "red";
+            if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+              authMessage.innerText = "Invalid email or password!";
+            } else {
+              authMessage.innerText = "Login failed: " + error.message;
+            }
+          });
+      }
+    });
+
+    // ✅ Redirect logged-in user automatically
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
+  </script>
+</body>
+</html>
