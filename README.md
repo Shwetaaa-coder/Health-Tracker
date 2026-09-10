@@ -59,7 +59,7 @@ Make sure you have the following installed:
 1. Clone the repository:
 
 ```bash
-git clone (https://github.com/Shwetaaa-coder/Health-Tracker.git)
+git clone https://github.com/Shwetaaa-coder/Health-Tracker.git
 ```
 
 2. Navigate to the project directory:
@@ -119,5 +119,5 @@ The main objective of Healthy Habits Tracker is to provide users with a simple p
 
 **Shweta Bangar**
 
-* GitHub: [[Add your GitHub profile link]](https://github.com/Shwetaaa-coder)
-* LinkedIn: [[Add your LinkedIn profile link]](https://www.linkedin.com/in/shweta-bangar/)
+- GitHub: [Shwetaaa-coder](https://github.com/Shwetaaa-coder)
+- LinkedIn: [Shweta Bangar](https://www.linkedin.com/in/shweta-bangar/)
