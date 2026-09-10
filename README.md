@@ -104,7 +104,7 @@ The main objective of Healthy Habits Tracker is to provide users with a simple p
 
 ## 🌐 Live Demo
 
-[[Add your deployed project link here]](https://healthy-habits-tracker-byshweta.netlify.app/)
+https://healthy-habits-tracker-byshweta.netlify.app
 
 ## 🔮 Future Improvements
 
